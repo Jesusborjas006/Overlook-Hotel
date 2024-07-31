@@ -1,8 +1,15 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Navbar from "./components/Navbar";
+
+// Create a client
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <>
-      <h1>Overlook Hotel</h1>
-    </>
+    // Provide the client to our App
+    <QueryClientProvider client={queryClient}>
+      <Navbar />
+    </QueryClientProvider>
   );
 }
 
