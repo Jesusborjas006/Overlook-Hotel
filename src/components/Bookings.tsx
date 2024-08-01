@@ -14,11 +14,22 @@ const Bookings = ({ user }: BookingsProp) => {
       fetch("http://localhost:3001/api/v1/bookings").then((res) => res.json()),
   });
 
-  const filteredBookings = data?.bookings.filter(
-    (booking: { userID: number }) => {
-      return booking.userID === user.id;
-    }
-  );
+  const { data: roomsData } = useQuery({
+    queryKey: ["roomsData"],
+    queryFn: () =>
+      fetch("http://localhost:3001/api/v1/rooms").then((res) => res.json()),
+  });
+
+  const userBookings = data?.bookings.filter((booking: { userID: number }) => {
+    return booking.userID === user.id;
+  });
+
+  const totalSpent = userBookings?.reduce((total, booking) => {
+    const room = roomsData?.rooms.find(
+      (room) => room.number === booking.roomNumber
+    );
+    return room ? total + room.costPerNight : total;
+  }, 0);
 
   if (isPending) return "Loading all bookings...";
 
@@ -27,7 +38,8 @@ const Bookings = ({ user }: BookingsProp) => {
   return (
     <div>
       <h3>My Bookings</h3>
-      {JSON.stringify(filteredBookings)}
+      {JSON.stringify(userBookings)}
+      <p>Total Spending: ${+totalSpent.toFixed(2)}</p>
     </div>
   );
 };
