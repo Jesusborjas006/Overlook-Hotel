@@ -11,7 +11,7 @@ const Bookings = ({ user }: BookingsProp) => {
   const { data, isPending, error } = useQuery({
     queryKey: ["bookingsData"],
     queryFn: () =>
-      fetch("http://localhost:3001/api/v1/bookings").then((res) => res.json()),
+      fetch(`http://localhost:3001/api/v1/bookings`).then((res) => res.json()),
   });
 
   const { data: roomsData } = useQuery({
