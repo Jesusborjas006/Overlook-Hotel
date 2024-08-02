@@ -1,10 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
+import { BookingType, CustomerType } from "../types";
 
 interface BookingsProp {
-  user: {
-    id: number;
-    name: string;
-  };
+  user: CustomerType;
 }
 
 const Bookings = ({ user }: BookingsProp) => {
@@ -20,13 +18,15 @@ const Bookings = ({ user }: BookingsProp) => {
       fetch("http://localhost:3001/api/v1/rooms").then((res) => res.json()),
   });
 
-  const userBookings = data?.bookings.filter((booking: { userID: number }) => {
-    return booking.userID === user.id;
-  });
+  const userBookings: BookingType[] = data?.bookings.filter(
+    (booking: { userID: number }) => {
+      return booking.userID === user.id;
+    }
+  );
 
   const totalSpent = userBookings?.reduce((total, booking) => {
     const room = roomsData?.rooms.find(
-      (room) => room.number === booking.roomNumber
+      (room: { number: number }) => room.number === booking.roomNumber
     );
     return room ? total + room.costPerNight : total;
   }, 0);
